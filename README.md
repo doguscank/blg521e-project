@@ -9,6 +9,7 @@ Python reimplementation of `self-parking-car-evolution-js` with the v1 scope:
 
 - Ported GA core and car-genome formulas from the TypeScript project
 - Deterministic kinematic car dynamics with polygon collision + 8 ray sensors
+- Extended controller inputs with state sensors: position `(x, y)`, velocity `(x, y)`, heading `(radian)`
 - Versioned Python-native checkpoint format (`checkpoint-v1`)
 - Selectable execution mode:
   - `single` (deterministic default)

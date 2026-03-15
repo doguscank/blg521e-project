@@ -14,7 +14,12 @@ from self_parking.core.math_utils import (
 )
 from self_parking.core.types import Command, WheelPoints
 
-CAR_SENSORS_NUM = 8
+# 8 ray distance sensors.
+RAY_SENSORS_NUM = 8
+# Additional state sensors: position (x, y), velocity (x, y), heading (radian).
+STATE_SENSORS_NUM = 5
+# Total control input sensors.
+CAR_SENSORS_NUM = RAY_SENSORS_NUM + STATE_SENSORS_NUM
 BIAS_UNITS = 1
 GENES_PER_NUMBER = precision_configs.custom.total_bits_count
 

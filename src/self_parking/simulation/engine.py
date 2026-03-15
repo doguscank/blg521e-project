@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import random
 from dataclasses import dataclass
 
@@ -31,7 +32,7 @@ class EpisodeResult:
     collisions: int
 
 
-def sensor_distances(
+def ray_sensor_distances(
     state: CarState,
     scenario: WorldScenario,
     config: SimulationConfig,
@@ -50,6 +51,25 @@ def sensor_distances(
         distances.append(distance)
 
     return distances
+
+
+def state_sensor_values(state: CarState) -> list[float]:
+    # World uses (x, z), while requested state sensors are (x, y).
+    # We map y <- z in this 2D simulation plane.
+    pos_x = state.x
+    pos_y = state.z
+    vel_x = state.speed * math.sin(state.yaw)
+    vel_y = state.speed * math.cos(state.yaw)
+    heading = state.yaw
+    return [pos_x, pos_y, vel_x, vel_y, heading]
+
+
+def controller_sensor_values(
+    state: CarState,
+    scenario: WorldScenario,
+    config: SimulationConfig,
+) -> list[float | None]:
+    return [*ray_sensor_distances(state, scenario, config), *state_sensor_values(state)]
 
 
 def simulate_episode_with_controller(
@@ -75,7 +95,7 @@ def simulate_episode_with_controller(
     history: list[EpisodeStep] = []
 
     for step_idx in range(steps_num):
-        sensors = sensor_distances(state, scenario, simulation_config)
+        sensors = controller_sensor_values(state, scenario, simulation_config)
         engine_cmd, wheel_cmd = controller(sensors)
 
         step_result = step_car(

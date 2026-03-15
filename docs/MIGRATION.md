@@ -14,7 +14,7 @@
   - XZ-plane euclidean distance
 - Car genome logic:
   - genome decoding into engine/wheel coefficients
-  - 8-sensor controller formulas
+  - controller formulas with 8 ray sensors + 5 state sensors (`pos_x`, `pos_y`, `vel_x`, `vel_y`, `heading`)
   - parking loss and fitness transform
 - Runtime behavior:
   - generation history (min loss + P50 average)

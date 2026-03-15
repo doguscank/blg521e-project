@@ -5,6 +5,7 @@ from __future__ import annotations
 import random
 from pathlib import Path
 
+from self_parking.core.car_genetic import RAY_SENSORS_NUM
 from self_parking.evolution.config import ScenarioConfig
 from self_parking.simulation.engine import EpisodeResult
 from self_parking.simulation.geometry import car_body_polygon
@@ -67,8 +68,9 @@ def animate_episode(
     ax.add_patch(car_patch)
 
     sensor_lines = []
+    ray_count = min(RAY_SENSORS_NUM, len(episode_result.steps[0].sensors))
     if show_sensors:
-        for _ in range(len(episode_result.steps[0].sensors)):
+        for _ in range(ray_count):
             line, = ax.plot([], [], color="tab:red", linewidth=0.8, alpha=0.6)
             sensor_lines.append(line)
 
@@ -102,8 +104,8 @@ def animate_episode(
         if show_sensors:
             import math  # noqa: PLC0415
 
-            angle_step = 2 * math.pi / len(step.sensors)
-            for sensor_idx, sensor_distance in enumerate(step.sensors):
+            angle_step = 2 * math.pi / ray_count
+            for sensor_idx, sensor_distance in enumerate(step.sensors[:ray_count]):
                 angle = state.yaw + angle_step * sensor_idx
                 max_d = sensor_distance if sensor_distance is not None else 4.0
                 end_x = state.x + max_d * math.sin(angle)
