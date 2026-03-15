@@ -14,6 +14,11 @@ class ForwardController:
         return 1, 0
 
 
+class LeftForwardController:
+    def __call__(self, sensor_values: list[float | None]) -> tuple[int, int]:
+        return 1, -1
+
+
 def test_sensor_raycast_distance_against_polygon() -> None:
     obstacle = rectangle_polygon(center_x=0.0, center_z=3.0, width=1.0, length=1.0)
     distance = raycast_polygons(origin=(0.0, 0.0), angle=0.0, obstacles=[obstacle], max_distance=10.0)
@@ -58,3 +63,26 @@ def test_episode_simulation_runs() -> None:
     )
     assert episode.loss >= 0
     assert len(episode.steps) == 10
+
+
+def test_collision_adds_big_penalty_to_loss() -> None:
+    simulation_config = SimulationConfig(episode_seconds=2.0, dt=0.1, collision_penalty=1000.0)
+    no_penalty_config = SimulationConfig(episode_seconds=2.0, dt=0.1, collision_penalty=0.0)
+    scenario_config = ScenarioConfig(start_position="middle")
+
+    no_penalty = simulate_episode_with_controller(
+        controller=LeftForwardController(),
+        simulation_config=no_penalty_config,
+        scenario_config=scenario_config,
+        seed=1,
+    )
+    with_penalty = simulate_episode_with_controller(
+        controller=LeftForwardController(),
+        simulation_config=simulation_config,
+        scenario_config=scenario_config,
+        seed=1,
+    )
+
+    assert with_penalty.collisions > 0
+    assert no_penalty.collisions == with_penalty.collisions
+    assert with_penalty.loss == no_penalty.loss + simulation_config.collision_penalty

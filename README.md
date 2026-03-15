@@ -88,4 +88,5 @@ pytest
 
 - Manual-driving mode is intentionally deferred in this v1.
 - Checkpoint compatibility with original JS JSON files is intentionally not included.
+- Collisions add a large loss penalty (`SimulationConfig.collision_penalty`, default `1000.0`).
 - See migration details in [`docs/MIGRATION.md`](docs/MIGRATION.md).

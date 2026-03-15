@@ -6,7 +6,7 @@ import random
 from dataclasses import dataclass
 
 from self_parking.core.types import Point2D, WheelPoints
-from self_parking.evolution.config import ScenarioConfig
+from self_parking.evolution.config import ScenarioConfig, StartPosition
 from self_parking.simulation.constants import (
     CHASSIS_LENGTH,
     CHASSIS_WIDTH,
@@ -65,7 +65,10 @@ def build_static_obstacles(
     return obstacles
 
 
-def start_point(position: str, with_random_start: bool, rng: random.Random) -> Point2D:
+def start_point(position: StartPosition, with_random_start: bool, rng: random.Random) -> Point2D:
+    if position == "random":
+        position = ("front", "middle", "rear")[rng.randrange(3)]
+
     if position == "rear":
         z = -7 - 2 * rng.random() if with_random_start else -7
     elif position == "middle":

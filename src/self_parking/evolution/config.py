@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import Literal
 
-StartPosition = Literal["front", "middle", "rear"]
+StartPosition = Literal["front", "middle", "rear", "random"]
 ExecutionMode = Literal["single", "parallel"]
 
 
@@ -21,6 +21,7 @@ class SimulationConfig:
     sensor_count: int = 8
     sensor_max_distance: float = 4.0
     sensor_distance_fallback: float = 0.0
+    collision_penalty: float = 1000.0
 
     def to_dict(self) -> dict:
         return asdict(self)

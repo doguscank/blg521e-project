@@ -5,11 +5,12 @@ from self_parking.evolution.config import (
     RetryPolicyConfig,
     ScenarioConfig,
     SimulationConfig,
+    StartPosition,
 )
 from self_parking.evolution.trainer import EvolutionTrainer
 
 
-def _trainer(mode: str) -> EvolutionTrainer:
+def _trainer(mode: str, start_position: StartPosition = "front") -> EvolutionTrainer:
     return EvolutionTrainer(
         evolution_config=EvolutionConfig(
             generation_size=12,
@@ -22,7 +23,7 @@ def _trainer(mode: str) -> EvolutionTrainer:
             seed=123,
         ),
         simulation_config=SimulationConfig(episode_seconds=1.2, dt=0.1),
-        scenario_config=ScenarioConfig(start_position="front"),
+        scenario_config=ScenarioConfig(start_position=start_position),
         retry_policy=RetryPolicyConfig(enabled=True, retries=1),
     )
 
@@ -52,3 +53,9 @@ def test_parallel_consistency_against_single_mode() -> None:
     assert single.loss_history == parallel.loss_history
     assert single.avg_loss_history == parallel.avg_loss_history
     assert single.best_loss == parallel.best_loss
+
+
+def test_training_runs_with_random_start_position() -> None:
+    result = _trainer("single", start_position="random").run()
+    assert len(result.loss_history) == 4
+    assert len(result.avg_loss_history) == 4

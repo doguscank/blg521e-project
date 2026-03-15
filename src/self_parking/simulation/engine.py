@@ -120,7 +120,9 @@ def simulate_episode_with_controller(
         )
 
     final_wheels = wheel_points(state.x, state.z, state.yaw)
-    loss = car_loss(final_wheels, scenario.parking_spot)
+    base_loss = car_loss(final_wheels, scenario.parking_spot)
+    collision_penalty = simulation_config.collision_penalty if collisions > 0 else 0.0
+    loss = base_loss + collision_penalty
 
     return EpisodeResult(
         loss=loss,

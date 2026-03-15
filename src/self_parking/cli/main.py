@@ -171,7 +171,7 @@ def build_parser() -> argparse.ArgumentParser:
     train.add_argument("--mode", choices=["single", "parallel"], default="single")
     train.add_argument("--workers", type=int, default=None)
     train.add_argument("--seed", type=int, default=42)
-    train.add_argument("--start-position", choices=["front", "middle", "rear"], default="front")
+    train.add_argument("--start-position", choices=["front", "middle", "rear", "random"], default="front")
     train.add_argument("--random-start", action="store_true")
     train.add_argument("--dt", type=float, default=0.1)
     train.add_argument("--episode-seconds", type=float, default=17.0)
