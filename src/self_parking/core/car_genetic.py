@@ -11,6 +11,8 @@ from self_parking.core.math_utils import (
     linear_polynomial,
     sigmoid,
     sigmoid_to_categories,
+    tanh,
+    tanh_to_categories
 )
 from self_parking.core.types import Command, WheelPoints
 
@@ -39,7 +41,16 @@ def car_loss(wheels_position: WheelPoints, parking_lot_corners: WheelPoints) -> 
     fr_distance = euclidean_distance_2d(wheels_position.fr, parking_lot_corners.fr)
     br_distance = euclidean_distance_2d(wheels_position.br, parking_lot_corners.br)
     bl_distance = euclidean_distance_2d(wheels_position.bl, parking_lot_corners.bl)
-    return (fl_distance + fr_distance + br_distance + bl_distance) / 4
+
+    fl_symmetric_distance = euclidean_distance_2d(wheels_position.fl, parking_lot_corners.br)
+    fr_symmetric_distance = euclidean_distance_2d(wheels_position.fr, parking_lot_corners.bl)
+    br_symmetric_distance = euclidean_distance_2d(wheels_position.br, parking_lot_corners.fl)
+    bl_symmetric_distance = euclidean_distance_2d(wheels_position.bl, parking_lot_corners.fr)
+
+    normal_loss = (fl_distance + fr_distance + br_distance + bl_distance) / 4
+    symmetric_loss = (fl_symmetric_distance + fr_symmetric_distance + br_symmetric_distance + bl_symmetric_distance) / 4
+
+    return (normal_loss + symmetric_loss) / 2
 
 
 def car_loss_to_fitness(loss: float, alpha: float = 1.0) -> float:
@@ -69,12 +80,12 @@ def decode_genome(genome: Genome) -> DecodedGenome:
 def engine_formula(genome: Genome, sensors: list[float]) -> Command:
     coefficients = decode_genome(genome).engine_formula_coefficients
     raw_result = linear_polynomial(coefficients, sensors)
-    normalized_result = sigmoid(raw_result)
-    return sigmoid_to_categories(normalized_result)
+    normalized_result = tanh(raw_result)
+    return tanh_to_categories(normalized_result)
 
 
 def wheels_formula(genome: Genome, sensors: list[float]) -> Command:
     coefficients = decode_genome(genome).wheels_formula_coefficients
     raw_result = linear_polynomial(coefficients, sensors)
-    normalized_result = sigmoid(raw_result)
-    return sigmoid_to_categories(normalized_result)
+    normalized_result = tanh(raw_result)
+    return tanh_to_categories(normalized_result)

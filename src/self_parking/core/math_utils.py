@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+import numpy as np
 
 from self_parking.core.types import Command
 
@@ -11,17 +12,37 @@ def sigmoid(x: float) -> float:
     # Keep the canonical form: 1 / (1 + exp(-x)).
     # Python may overflow for very negative x when evaluating exp(-x),
     # in that case sigmoid saturates to 0.
+
     try:
         z = math.exp(-x)
     except OverflowError:
         return 0.0
     return 1 / (1 + z)
 
+def tanh(x: float) -> float:
+    # Keep the canonical form: (exp(x) - exp(-x)) / (exp(x) + exp(-x)).
+    # Python may overflow for very positive x when evaluating exp(x),
+    # in that case tanh saturates to 1. For very negative x, tanh saturates to -1.
+
+    try:
+        z = math.exp(-2 * x)
+    except OverflowError:
+        return 1.0 if x > 0 else -1.0
+    return (1 - z) / (1 + z)
+
 
 def sigmoid_to_categories(sigmoid_value: float, around_zero_margin: float = 0.49999) -> Command:
+    # Notice that this returns zero of sigmoid value is within [-0.00001, 0.00001]
     if sigmoid_value < (0.5 - around_zero_margin):
         return -1
     if sigmoid_value > (0.5 + around_zero_margin):
+        return 1
+    return 0
+
+def tanh_to_categories(tanh_value: float, around_zero_margin: float = 0.00001) -> Command:
+    if tanh_value < (-around_zero_margin):
+        return -1
+    if tanh_value > around_zero_margin:
         return 1
     return 0
 

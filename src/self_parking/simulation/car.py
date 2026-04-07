@@ -24,7 +24,7 @@ class GenomeCarController:
     """Genome-driven controller using ported formulas."""
 
     genome: Genome
-    sensor_distance_fallback: float = 0.0
+    sensor_distance_fallback: float = 10.0  # This is important
 
     def __call__(self, sensor_values: list[float | None]) -> tuple[Command, Command]:
         cleaned = [
