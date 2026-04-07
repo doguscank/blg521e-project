@@ -36,6 +36,14 @@ source .venv/bin/activate
 pip install -e '.[dev,viz,notebook]'
 ```
 
+## More basic usage
+
+If you have `make` installed, you can run `make load` to load the project as a library,
+`make train` to train with the parameters included in the Makefile and `make playback`
+to record a gif with the parameters included in the Makefile, instead of copy pasting
+below commands into the terminal.
+
+
 ## CLI Usage
 
 Train and save checkpoint:
