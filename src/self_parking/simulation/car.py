@@ -11,6 +11,9 @@ from self_parking.core.types import Command, Genome
 from self_parking.evolution.config import SimulationConfig
 from self_parking.simulation.geometry import car_body_polygon, intersects_any
 
+GLOBAL_ACCELERATION = 1.0
+GLOBAL_ACCELERATION_ANGLE = 0.0  # measured in radians, against +z axis, clockwise
+
 
 class CarController(Protocol):
     """Controller contract: maps sensor values to (engine, wheel) commands."""
@@ -60,6 +63,9 @@ def step_car(
     """Advance one fixed-dt step with kinematic bicycle model and polygon collision."""
     steering = wheel_cmd * config.max_steer
     acceleration = engine_cmd * config.max_acceleration - config.drag * state.speed
+
+    acceleration = GLOBAL_ACCELERATION * math.cos(GLOBAL_ACCELERATION_ANGLE - state.yaw) + acceleration
+
     speed = max(-config.max_speed, min(config.max_speed, state.speed + acceleration * config.dt))
 
     yaw_rate = 0.0
@@ -67,6 +73,7 @@ def step_car(
         yaw_rate = speed / config.wheelbase * math.tan(steering)
 
     candidate_yaw = state.yaw + yaw_rate * config.dt
+    # when yaw is zero, we move in the +z direction
     candidate_x = state.x + speed * math.sin(candidate_yaw) * config.dt
     candidate_z = state.z + speed * math.cos(candidate_yaw) * config.dt
 

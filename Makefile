@@ -1,10 +1,10 @@
 GENERATIONS := 20
 GENERATION_SIZE := 100
-OUTPUT := artifacts/checkpoints/run.json
-PLOT := artifacts/plots/loss.png
+OUTPUT := artifacts/checkpoints/run_acceleration.json
+PLOT := artifacts/plots/loss_acceleration.png
 MODE := single
 CHECKPOINT := $(OUTPUT)
-GIF_PATH := artifacts/playback/run.gif
+GIF_PATH := artifacts/playback/run_acceleration.gif
 
 
 .PHONY: train, playback, load
