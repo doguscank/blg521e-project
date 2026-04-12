@@ -4,6 +4,8 @@ Python reimplementation of `self-parking-car-evolution-js` with the v1 scope:
 - `Evolution` mode (genetic training)
 - `Automatic parking` mode (best-genome playback)
 - Polygon-based 2D simulation (no high-level visuals/3D models)
+- There is a default global acceleration along +z direction with a magnitude of 1 to simulate an incline 
+(check src/self_parking/simulation/car.py)
 
 ## Features
 
