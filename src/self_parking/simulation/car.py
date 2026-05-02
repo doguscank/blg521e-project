@@ -11,7 +11,7 @@ from self_parking.core.types import Command, Genome
 from self_parking.evolution.config import SimulationConfig
 from self_parking.simulation.geometry import car_body_polygon, intersects_any
 
-GLOBAL_ACCELERATION = 1.0
+GLOBAL_ACCELERATION = 5.0
 GLOBAL_ACCELERATION_ANGLE = 0.0  # measured in radians, against +z axis, clockwise
 
 
